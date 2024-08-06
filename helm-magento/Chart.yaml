@@ -1,0 +1,4 @@
+apiVersion: v2
+name: magento
+description: A Magento deployment on Kubernetes
+version: 1.0.0

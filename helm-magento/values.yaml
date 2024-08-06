@@ -1,0 +1,38 @@
+replicaCount: 1
+
+image:
+  repository: your-custom-magento-image
+  tag: latest
+  pullPolicy: IfNotPresent
+
+mysql:
+  rootPassword: mysql-root-password
+  database: magento
+  user: mysql-user
+  password: mysql-password
+  storage:
+    enabled: true
+    size: 10Gi
+    storageClassName: standard
+
+elasticsearch:
+  image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+  replicaCount: 1
+  storage:
+    enabled: true
+    size: 30Gi
+    storageClassName: standard
+
+magento:
+  storage:
+    enabled: true
+    size: 20Gi
+    storageClassName: standard
+
+ingress:
+  enabled: true
+  hosts:
+    - host: custandstitch.com
+      paths:
+        - path: /
+          pathType: Prefix

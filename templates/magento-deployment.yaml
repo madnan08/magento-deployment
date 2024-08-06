@@ -1,0 +1,82 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: magento
+  labels:
+    app: magento
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: magento
+  template:
+    metadata:
+      labels:
+        app: magento
+    spec:
+      containers:
+        - name: magento
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 80
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: root-password
+            - name: MYSQL_DATABASE
+              value: {{ .Values.mysql.database }}
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: password
+          volumeMounts:
+            - name: magento-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+            - name: php-config
+              mountPath: /usr/local/etc/php/php.ini
+              subPath: php.ini
+            - name: supervisord-config
+              mountPath: /etc/supervisord.conf
+              subPath: supervisord.conf
+      volumes:
+        - name: magento-config
+          configMap:
+            name: magento-config
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        - name: php-config
+          configMap:
+            name: magento-config
+            items:
+              - key: php.ini
+                path: php.ini
+        - name: supervisord-config
+          configMap:
+            name: magento-config
+            items:
+              - key: supervisord.conf
+                path: supervisord.conf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: magento
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: magento
