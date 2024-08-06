@@ -23,18 +23,19 @@ RUN apt-get update && apt-get install -y \
     && pecl install redis \
     && docker-php-ext-enable redis
 
-# Set working directory
-WORKDIR /var/www/magento2
+COPY auth.json /root/.composer/auth.json
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-ARG MAGENTO_PUBLIC_KEY
-ARG MAGENTO_PRIVATE_KEY
+RUN chmod +x /usr/bin/composer
 
+RUN mkdir -p /var/www/magento2
+WORKDIR /var/www/magento2
 # Install Magento 2.4.6
-RUN composer config http-basic.repo.magento.com $MAGENTO_PUBLIC_KEY $MAGENTO_PRIVATE_KEY \
-    && composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.6 .
+RUN composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.6 /var/www/magento2
 
 # Set permissions for Magento directories
 RUN chown -R www-data:www-data /var/www/magento2 \
