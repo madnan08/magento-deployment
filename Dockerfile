@@ -29,8 +29,12 @@ WORKDIR /var/www/magento2
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+ARG MAGENTO_PUBLIC_KEY
+ARG MAGENTO_PRIVATE_KEY
+
 # Install Magento 2.4.6
-RUN composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.6 .
+RUN composer config http-basic.repo.magento.com $MAGENTO_PUBLIC_KEY $MAGENTO_PRIVATE_KEY \
+    && composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.6 .
 
 # Set permissions for Magento directories
 RUN chown -R www-data:www-data /var/www/magento2 \
