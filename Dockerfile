@@ -42,4 +42,4 @@ COPY php-fpm.conf /usr/local/etc/php-fpm.conf
 EXPOSE 9000
 
 # Start PHP-FPM
-CMD ["php-fpm"]
+CMD ["php-fpm", "-F"]
