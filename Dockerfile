@@ -3,26 +3,31 @@ FROM php:8.1-fpm
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# Install system dependencies and PHP extensions
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && \
+    apt-get install -y \
     nginx \
+    libicu-dev \
     libzip-dev \
-    unzip \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
     libxml2-dev \
-    libicu-dev \
-    libxslt1-dev \
-    libonig-dev \
+    unzip \
+    git \
+    libxslt-dev \
+    zlib1g-dev \
     libcurl4-openssl-dev \
-    libbz2-dev \
+    libonig-dev \
     libmcrypt-dev \
     libsqlite3-dev \
-    git \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd intl xsl zip pdo_mysql \
-    && pecl install xdebug && docker-php-ext-enable xdebug
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd intl xsl zip bcmath opcache pdo pdo_mysql \
+    && docker-php-ext-install ctype curl dom fileinfo filter hash iconv json \
+    && docker-php-ext-install libxml mbstring openssl pcre simplexml soap sockets sodium tokenizer xmlwriter zlib \
+    && docker-php-ext-enable opcache
 
 COPY auth.json /root/.composer/auth.json
 
