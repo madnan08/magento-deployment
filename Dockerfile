@@ -4,11 +4,9 @@ FROM php:8.1-fpm
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN apt-get update && \
-    apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libzip-dev libicu-dev libxslt-dev zip unzip git nginx supervisor && \
+    apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libzip-dev libicu-dev libxslt-dev zip unzip git && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install gd pdo_mysql zip bcmath intl xsl pdo soap sockets
-
-
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && chmod +x /usr/local/bin/composer
@@ -30,20 +28,7 @@ RUN chown -R www-data:www-data /var/www/magento2 \
     && find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} + \
     && chmod u+x bin/magento
 
-# Copy Nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
-RUN ln -s /etc/nginx/sites-available/magento /etc/nginx/sites-enabled/magento
-
-# Copy Supervisor configuration
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-RUN echo "listen = /var/run/php/php8.1-fpm.sock" >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo "listen.owner = www-data" >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo "listen.group = www-data" >> /usr/local/etc/php-fpm.d/www.conf \
-    && echo "listen.mode = 0660" >> /usr/local/etc/php-fpm.d/www.conf
-
-# Expose port 80
-EXPOSE 80
+EXPOSE 9000
 
 # Start services
-CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["php-fpm"]
