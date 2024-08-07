@@ -4,23 +4,23 @@ FROM php:8.1-fpm
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN apt-get update && \
-    apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libzip-dev zip unzip && \
+    apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libzip-dev libicu-dev libxslt-dev zip unzip git && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
-    docker-php-ext-install gd pdo_mysql zip bcmath
+    docker-php-ext-install gd pdo_mysql zip bcmath intl xsl pdo
 
-COPY auth.json /root/.composer/auth.json
+
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && chmod +x /usr/local/bin/composer
 # Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-RUN chmod +x /usr/bin/composer
+# COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# RUN chmod +x /usr/bin/composer
 
 RUN mkdir -p /var/www/magento2
 WORKDIR /var/www/magento2
-# Install Magento 2.4.6
-RUN composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition .
+# Install Magento 2.4.7-p1
+COPY auth.json /root/.composer/auth.json
+RUN composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition 2.4.7-p1 .
 
 # Set permissions for Magento directories
 RUN chown -R www-data:www-data /var/www/magento2 \
