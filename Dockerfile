@@ -31,13 +31,13 @@ RUN chown -R www-data:www-data /var/www/magento2 \
     && chmod u+x bin/magento
 
 # Copy Nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
+#COPY nginx.conf /etc/nginx/nginx.conf
 
 # Copy Supervisor configuration
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+#COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Expose port 80
 EXPOSE 80
 
 # Start services
-CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["php-fpm"]
