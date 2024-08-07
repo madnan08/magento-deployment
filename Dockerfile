@@ -3,48 +3,10 @@ FROM php:8.1-fpm
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-RUN apt-get update && apt-get install -y \
-    nginx \
-    git \
-    libfreetype6-dev \
-    libjpeg62-turbo-dev \
-    libpng-dev \
-    libicu-dev \
-    libxslt1-dev \
-    libzip-dev \
-    libcurl4-openssl-dev \
-    pkg-config \
-    unzip \
-    gnupg2 \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) \
-        gd \
-        intl \
-        xsl \
-        zip \
-        bcmath \
-        opcache \
-        pdo \
-        pdo_mysql \
-        ctype \
-        curl \
-        dom \
-        fileinfo \
-        filter \
-        hash \
-        iconv \
-        json \
-        libxml \
-        mbstring \
-        openssl \
-        pcre \
-        simplexml \
-        soap \
-        sockets \
-        sodium \
-        tokenizer \
-        xmlwriter \
-        zlib
+RUN apt-get update && \
+    apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libzip-dev zip unzip && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install gd pdo_mysql zip bcmath
 
 COPY auth.json /root/.composer/auth.json
 
