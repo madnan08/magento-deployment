@@ -12,8 +12,8 @@ echo "MySQL is ready."
 if [ ! -f /var/www/magento2/app/etc/env.php ]; then
     echo "Running Magento setup:install..."
     php /var/www/magento2/bin/magento setup:install \
-        --base-url=http://localhost.com:3306 \
-        --db-host=localhost \
+        --base-url=http://localhost.com:9000 \
+        --db-host=localhost:3306 \
         --db-name=magentodb \
         --db-user=magentouser \
         --db-password=MyPassword \
