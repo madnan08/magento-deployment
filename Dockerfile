@@ -3,30 +3,46 @@ FROM php:8.1-fpm
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-RUN apt-get update && \
-    apt-get install -y \
+RUN apt-get update && apt-get install -y \
     nginx \
-    libicu-dev \
-    libzip-dev \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libxml2-dev \
-    unzip \
     git \
-    libxslt-dev \
-    zlib1g-dev \
-    libcurl4-openssl-dev \
-    libonig-dev \
-    libmcrypt-dev \
-    libsqlite3-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install PHP extensions
-RUN docker-php-ext-install -j$(nproc) gd intl xsl zip bcmath opcache pdo pdo_mysql \
-    && docker-php-ext-install ctype curl dom fileinfo filter hash iconv json \
-    && docker-php-ext-install libxml mbstring openssl pcre simplexml soap sockets sodium tokenizer xmlwriter zlib
-
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libicu-dev \
+    libxslt1-dev \
+    libzip-dev \
+    unzip \
+    gnupg2 \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) \
+        gd \
+        intl \
+        xsl \
+        zip \
+        bcmath \
+        opcache \
+        pdo \
+        pdo_mysql \
+        ctype \
+        curl \
+        dom \
+        fileinfo \
+        filter \
+        hash \
+        iconv \
+        json \
+        libxml \
+        mbstring \
+        openssl \
+        pcre \
+        simplexml \
+        soap \
+        sockets \
+        sodium \
+        tokenizer \
+        xmlwriter \
+        zlib
 
 COPY auth.json /root/.composer/auth.json
 
