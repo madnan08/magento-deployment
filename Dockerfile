@@ -41,5 +41,7 @@ COPY php-fpm.conf /usr/local/etc/php-fpm.conf
 # Expose port for PHP-FPM
 EXPOSE 9000
 
-# Start PHP-FPM
-CMD ["php-fpm", "-F"]
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+CMD ["/usr/local/bin/start.sh"]
