@@ -13,7 +13,7 @@ RUN apt-get update && \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && chmod +x /usr/local/bin/composer
 
-RUN mkdir -p /var/run/php && chown www-data:www-data /var/run/php
+#RUN mkdir -p /var/run/php && chown www-data:www-data /var/run/php
 
 RUN mkdir -p /var/www/magento2
 WORKDIR /var/www/magento2
@@ -32,6 +32,7 @@ RUN chown -R www-data:www-data /var/www/magento2 \
 
 # Copy Nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
+RUN ln -s /etc/nginx/sites-available/magento /etc/nginx/sites-enabled/magento
 
 # Copy Supervisor configuration
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
