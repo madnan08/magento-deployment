@@ -1,8 +1,11 @@
 # Use an official PHP image with the required version and extensions
 FROM php:8.1-fpm
 
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 # Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
+    nginx \
     libzip-dev \
     unzip \
     libpng-dev \
@@ -35,7 +38,7 @@ RUN chmod +x /usr/bin/composer
 RUN mkdir -p /var/www/magento2
 WORKDIR /var/www/magento2
 # Install Magento 2.4.6
-RUN composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.6 /var/www/magento2
+RUN composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition .
 
 # Set permissions for Magento directories
 RUN chown -R www-data:www-data /var/www/magento2 \
