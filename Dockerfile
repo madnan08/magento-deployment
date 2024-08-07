@@ -40,4 +40,4 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 EXPOSE 80
 
 # Start services
-CMD ["php-fpm"]
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
