@@ -17,6 +17,7 @@ RUN mkdir -p /var/run/php && chown www-data:www-data /var/run/php
 
 RUN mkdir -p /var/www/magento2
 WORKDIR /var/www/magento2
+
 # Install Magento 2.4.7-p1
 COPY auth.json /root/.composer/auth.json
 RUN composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.7-p1 .
