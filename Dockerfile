@@ -21,9 +21,13 @@ COPY auth.json /root/.composer/auth.json
 RUN composer self-update
 RUN composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.6 .
 
+RUN mkdir -p /run/php \
+    && chown -R www-data:www-data /run/php
 
+# Expose port for PHP-FPM
 EXPOSE 9000
 
+# Copy PHP-FPM configuration
 COPY php-fpm.conf /usr/local/etc/php-fpm.conf
 
 # Start services
