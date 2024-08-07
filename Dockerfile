@@ -36,6 +36,11 @@ COPY nginx.conf /etc/nginx/nginx.conf
 # Copy Supervisor configuration
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+RUN echo "listen = /var/run/php/php8.1-fpm.sock" >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo "listen.owner = www-data" >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo "listen.group = www-data" >> /usr/local/etc/php-fpm.d/www.conf \
+    && echo "listen.mode = 0660" >> /usr/local/etc/php-fpm.d/www.conf
+
 # Expose port 80
 EXPOSE 80
 
