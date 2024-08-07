@@ -21,17 +21,15 @@ RUN apt-get update && apt-get install -y \
     libsqlite3-dev \
     git \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd \
-    && docker-php-ext-install bcmath intl soap zip curl mysqli xml xsl \
-    && pecl install redis \
-    && docker-php-ext-enable redis
+    && docker-php-ext-install -j$(nproc) gd intl xsl zip pdo_mysql \
+    && pecl install xdebug && docker-php-ext-enable xdebug
 
 COPY auth.json /root/.composer/auth.json
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && chmod +x /usr/local/bin/composer
 # Install Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 RUN chmod +x /usr/bin/composer
 
@@ -42,7 +40,10 @@ RUN composer create-project --repository-url=https://repo.magento.com/ magento/p
 
 # Set permissions for Magento directories
 RUN chown -R www-data:www-data /var/www/magento2 \
-    && chmod -R 755 /var/www/magento2
+    && chmod -R 755 /var/www/magento2 \
+    && find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} + \
+    && find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} + \
+    && chmod u+x bin/magento
 
 # Copy Nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
