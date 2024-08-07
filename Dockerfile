@@ -23,11 +23,10 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd intl xsl zip bcmath opcache pdo pdo_mysql \
+RUN docker-php-ext-install -j$(nproc) gd intl xsl zip bcmath opcache pdo pdo_mysql \
     && docker-php-ext-install ctype curl dom fileinfo filter hash iconv json \
-    && docker-php-ext-install libxml mbstring openssl pcre simplexml soap sockets sodium tokenizer xmlwriter zlib \
-    && docker-php-ext-enable opcache
+    && docker-php-ext-install libxml mbstring openssl pcre simplexml soap sockets sodium tokenizer xmlwriter zlib
+
 
 COPY auth.json /root/.composer/auth.json
 
