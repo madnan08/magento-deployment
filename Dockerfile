@@ -13,6 +13,8 @@ RUN apt-get update && \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && chmod +x /usr/local/bin/composer
 
+RUN mkdir -p /var/run/php && chown www-data:www-data /var/run/php
+
 RUN mkdir -p /var/www/magento2
 WORKDIR /var/www/magento2
 # Install Magento 2.4.7-p1
