@@ -4,7 +4,7 @@ FROM php:8.1-fpm
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN apt-get update && \
-    apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libzip-dev libicu-dev libxslt-dev zip unzip git && \
+    apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libzip-dev libicu-dev libxslt-dev zip unzip git nginx && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install gd pdo_mysql zip bcmath intl xsl pdo soap sockets
 
@@ -33,4 +33,4 @@ COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80
 
 # Start PHP-FPM server
-CMD ["php-fpm"]
+CMD service nginx start && php-fpm
