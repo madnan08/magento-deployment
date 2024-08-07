@@ -12,6 +12,8 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libxslt1-dev \
     libzip-dev \
+    libcurl4-openssl-dev \
+    pkg-config \
     unzip \
     gnupg2 \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
