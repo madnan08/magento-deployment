@@ -40,11 +40,12 @@ kind: Service
 metadata:
   name: elasticsearch
 spec:
+  selector:
+    app: elasticsearch
   ports:
   - port: 9200
     targetPort: 9200
+    name: http
   - port: 9300
     targetPort: 9300
-  selector:
-    app: elasticsearch
-  clusterIP: None
+    name: transport
