@@ -42,6 +42,7 @@ COPY php-fpm.conf /usr/local/etc/php-fpm.conf
 EXPOSE 9000
 
 COPY start.sh /usr/local/bin/start.sh
-RUN chmod +x /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh \
+    && chown www-data:www-data /usr/local/bin/start.sh
 
 CMD ["/usr/local/bin/start.sh"]
