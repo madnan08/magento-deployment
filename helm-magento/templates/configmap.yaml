@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: magento-config
+  namespace: magento
 data:
   nginx.conf: |
     {{ .Files.Get "~/magento-deployment/nginx.conf" }}

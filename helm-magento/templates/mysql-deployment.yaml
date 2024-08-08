@@ -1,15 +1,40 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv
+  namespace: magento
+spec:
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/data/mysql
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+  namespace: magento
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: mysql
-  labels:
-    app: mysql
+  namespace: magento
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: mysql
+  replicas: 1
   template:
     metadata:
       labels:
@@ -17,25 +42,22 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: mysql:5.7
+          image: mysql:8.0
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql-secret
-                  key: root-password
+                  name: mysql-secrets
+                  key: mysql-root-password
             - name: MYSQL_DATABASE
-              value: {{ .Values.mysql.database }}
+              value: "magentodb"
             - name: MYSQL_USER
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-secret
-                  key: user
+              value: "madnan08"
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql-secret
-                  key: password
+                  name: mysql-secrets
+                  key: mysql-magento-password
           ports:
             - containerPort: 3306
           volumeMounts:
@@ -44,16 +66,16 @@ spec:
       volumes:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
-            claimName: mysql-pv-claim
+            claimName: mysql-pvc
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: mysql
+  namespace: magento
 spec:
-  type: ClusterIP
   ports:
     - port: 3306
-      targetPort: 3306
   selector:
     app: mysql
