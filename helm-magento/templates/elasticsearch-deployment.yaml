@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: elasticsearch
-  namespace: magento
   labels:
     app: elasticsearch
 spec:
@@ -17,35 +16,29 @@ spec:
     spec:
       containers:
       - name: elasticsearch
-        image: docker.elastic.co/elasticsearch/elasticsearch:8.0.0
-        env:
-        - name: discovery.type
-          value: single-node
-        - name: ES_JAVA_OPTS
-          value: "-Xms512m -Xmx512m"
+        image: elasticsearch:7.8.1
         ports:
         - containerPort: 9200
         - containerPort: 9300
-        volumeMounts:
-        - name: elasticsearch-persistent-storage
-          mountPath: /usr/share/elasticsearch/data
-      volumes:
-      - name: elasticsearch-persistent-storage
-        persistentVolumeClaim:
-          claimName: elasticsearch-pvc
-
+        env:
+        - name: discovery.type
+          value: "single-node"
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: elasticsearch
-spec:
-  selector:
+  labels:
     app: elasticsearch
+spec:
   ports:
   - port: 9200
     targetPort: 9200
+    protocol: TCP
     name: http
   - port: 9300
     targetPort: 9300
+    protocol: TCP
     name: transport
+  selector:
+    app: elasticsearch
