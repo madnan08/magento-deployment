@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Wait for MySQL to be ready (optional but recommended)
 echo "Waiting for MySQL to be ready..."
@@ -12,11 +12,11 @@ echo "MySQL is ready."
 if [ ! -f /var/www/magento2/app/etc/env.php ]; then
     echo "Running Magento setup:install..."
     php /var/www/magento2/bin/magento setup:install \
-        --base-url=http://localhost.com \
-        --db-host=localhost:3306 \
-        --db-name=magentodb \
-        --db-user=magentouser \
-        --db-password=MyPassword \
+        --base-url=http://localhost \
+        --db-host="$DB_HOST" \
+        --db-name="$DB_NAME" \
+        --db-user="$DB_USER" \
+        --db-password="$DB_PASSWORD" \
         --admin-firstname=Admin \
         --admin-lastname=User \
         --admin-email=admin@your-domain.com \
