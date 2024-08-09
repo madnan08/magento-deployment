@@ -1,7 +1,8 @@
 #!/bin/bash
 
+cd /var/www/magento2
 echo "Running Magento setup:install..."
-php /var/www/magento2/bin/magento setup:install \
+php bin/magento setup:install \
     --base-url=${MAGENTO_HOST} \
     --db-host=${DB_HOST} \
     --db-name=${DB_NAME} \
