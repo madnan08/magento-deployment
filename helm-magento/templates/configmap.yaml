@@ -6,7 +6,5 @@ metadata:
 data:
   nginx.conf: |
     {{ .Files.Get "~/magento-deployment/nginx.conf" }}
-  php.ini: |
-    {{ .Files.Get "~/magento-deployment/php.ini" }}
-  supervisord.conf: |
-    {{ .Files.Get "~/magento-deployment/supervisord.conf" }}
+  php-fpm.conf: |
+    {{ .Files.Get "~/magento-deployment/php-fpm.conf" }}

@@ -7,7 +7,7 @@ metadata:
   labels:
     app: magento
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       app: magento
@@ -18,8 +18,8 @@ spec:
     spec:
       containers:
         - name: magento
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: madnan08/magento-image:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
           env:
@@ -27,19 +27,16 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: mysql-secret
-                  key: root-password
+                  key: mysql-root-password
             - name: MYSQL_DATABASE
-              value: {{ .Values.mysql.database }}
+              value: magentodb
             - name: MYSQL_USER
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-secret
-                  key: user
+              value: "madnan08"
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mysql-secret
-                  key: password
+                  key: mysql-magento-password
           volumeMounts:
             - name: magento-config
               mountPath: /etc/nginx/nginx.conf
