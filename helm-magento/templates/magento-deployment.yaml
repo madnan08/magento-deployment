@@ -42,18 +42,6 @@ spec:
                 secretKeyRef:
                   name: magento-secrets
                   key: admin-password
-          ports:
-            - name: http
-              containerPort: 9000
-          volumeMounts:
-            - name: magento-data
-              mountPath: /var/www/magento2
-      initContainers:
-        - name: magento-setup
-          image: madnan08/magento-image:latest
-          imagePullPolicy: IfNotPresent
-          command: ["/usr/local/bin/start.sh"]
-          env:
             - name: DB_HOST
               value: mysql
             - name: DB_NAME
@@ -72,6 +60,9 @@ spec:
                   key: mysql-root-password
             - name: ELASTICSEARCH_HOST
               value: elasticsearch
+          ports:
+            - name: http
+              containerPort: 9000
           volumeMounts:
             - name: magento-data
               mountPath: /var/www/magento2
@@ -79,6 +70,7 @@ spec:
         - name: magento-data
           persistentVolumeClaim:
             claimName: magento-pvc
+
 ---
 apiVersion: v1
 kind: Service
