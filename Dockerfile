@@ -38,7 +38,7 @@ COPY auth.json /root/.composer/auth.json
 COPY php-fpm.conf /usr/local/etc/php-fpm.conf
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY php.ini /usr/local/etc/php/conf.d/
-COPY supervisord.conf /etc/supervisord.conf
+COPY supervisord.conf /etc/supervisor/supervisord.conf
 
 # Expose port for PHP-FPM
 EXPOSE 80 9000
