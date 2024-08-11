@@ -8,3 +8,5 @@ data:
     {{ .Files.Get "~/magento-deployment/nginx.conf" }}
   php-fpm.conf: |
     {{ .Files.Get "~/magento-deployment/php-fpm.conf" }}
+  supervisord.conf: |
+    {{ .Files.Get "~/magento-deployment/supervisord.conf" }}

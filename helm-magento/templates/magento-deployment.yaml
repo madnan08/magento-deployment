@@ -20,28 +20,8 @@ spec:
           image: madnan08/magento-image:latest
           imagePullPolicy: IfNotPresent
           env:
-            - name: MAGENTO_DATABASE_HOST
-              value: mysql
-            - name: MAGENTO_DATABASE_PORT_NUMBER
-              value: "3306"
-            - name: MAGENTO_DATABASE_NAME
-              value: magentodb
-            - name: MAGENTO_DATABASE_USER
-              value: magentouser
-            - name: MAGENTO_DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-secrets
-                  key: mysql-magento-password
             - name: MAGENTO_HOST
-              value: "http://20.51.207.214:9000"
-            - name: MAGENTO_USERNAME
-              value: admin
-            - name: MAGENTO_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: magento-secrets
-                  key: admin-password
+              value: "http://20.51.207.214:32000"
             - name: DB_HOST
               value: mysql
             - name: DB_NAME
@@ -53,24 +33,46 @@ spec:
                 secretKeyRef:
                   name: mysql-secrets
                   key: mysql-magento-password
-            - name: ADMIN_PASSWORD
+            - name: MAGENTO_USERNAME
+              value: admin
+            - name: MAGENTO_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql-secrets
-                  key: mysql-root-password
+                  name: magento-secrets
+                  key: admin-password
             - name: ELASTICSEARCH_HOST
               value: elasticsearch
+            - name: PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: magento-auth-keys
+                  key: public-key
+            - name: PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: magento-auth-keys
+                  key: private-key
           ports:
             - name: http
-              containerPort: 9000
+              containerPort: 80
           volumeMounts:
             - name: magento-data
               mountPath: /var/www/magento2
+            - name: magento-keys
+              mountPath: "/root/.composer/"
+              readOnly: true
       volumes:
         - name: magento-data
           persistentVolumeClaim:
             claimName: magento-pvc
-
+        - name: magento-keys
+          secret:
+            secretName: magento-auth-keys
+            items:
+              - key: public-key
+                path: auth.json
+              - key: private-key
+                path: auth.json
 ---
 apiVersion: v1
 kind: Service
@@ -83,7 +85,7 @@ spec:
   type: NodePort
   ports:
     - port: 80
-      targetPort: 9000
+      targetPort: 80
       nodePort: 32000
   selector:
     app: magento

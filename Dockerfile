@@ -6,6 +6,8 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 # Install dependencies and PHP extensions
 RUN apt-get update && \
     apt-get install -y \
+    nginx \
+    supervisor \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -30,21 +32,19 @@ RUN mkdir -p /var/www/magento2 && \
 
 WORKDIR /var/www/magento2
 
-# Install Magento 2.4.6
 COPY auth.json /root/.composer/auth.json
-RUN composer self-update && \
-    composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.6 .
 
-# Copy PHP configuration file
+# Copy configuration files
 COPY php-fpm.conf /usr/local/etc/php-fpm.conf
-# Copy custom php.ini configuration
+COPY nginx.conf /etc/nginx/nginx.conf
 COPY php.ini /usr/local/etc/php/conf.d/
+COPY supervisord.conf /etc/supervisord.conf
 
 # Expose port for PHP-FPM
-EXPOSE 9000
+EXPOSE 80 9000
 
 COPY start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh \
     && chown www-data:www-data /usr/local/bin/start.sh
 
-CMD ["/usr/local/bin/start.sh"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
