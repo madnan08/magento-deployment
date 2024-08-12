@@ -3,21 +3,6 @@
 # Change directory to where Magento should be installed
 cd /var/www/magento2
 
-# Set up Composer authentication in a writable location
-AUTH_FILE="/tmp/auth.json"
-echo "Setting up Composer authentication..."
-echo '{
-    "http-basic": {
-        "repo.magento.com": {
-            "username": "'"${PUBLIC_KEY}"'",
-            "password": "'"${PRIVATE_KEY}"'"
-        }
-    }
-}' > $AUTH_FILE
-
-# Export COMPOSER_AUTH environment variable pointing to the auth.json
-export COMPOSER_AUTH=$(cat $AUTH_FILE)
-
 # Update Composer to the latest version
 echo "Updating Composer..."
 composer self-update
