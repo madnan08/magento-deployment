@@ -58,7 +58,7 @@ spec:
           volumeMounts:
             - name: magento-data
               mountPath: /var/www/magento2
-            - name: magento-keys
+            - name: composer-auth
               mountPath: "/root/.composer/auth.json"
               subPath: auth.json
               readOnly: true
