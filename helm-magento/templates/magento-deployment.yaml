@@ -59,20 +59,16 @@ spec:
             - name: magento-data
               mountPath: /var/www/magento2
             - name: magento-keys
-              mountPath: "/root/.composer/"
+              mountPath: "/root/.composer/auth.json"
+              subPath: auth.json
               readOnly: true
       volumes:
         - name: magento-data
           persistentVolumeClaim:
             claimName: magento-pvc
-        - name: magento-keys
+        - name: composer-auth
           secret:
             secretName: magento-auth-keys
-            items:
-              - key: public-key
-                path: auth.json
-              - key: private-key
-                path: auth.json
 ---
 apiVersion: v1
 kind: Service
