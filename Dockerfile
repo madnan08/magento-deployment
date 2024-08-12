@@ -38,7 +38,7 @@ COPY auth.json /root/.composer/auth.json
 COPY php-fpm.conf /usr/local/etc/php-fpm.conf
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY php.ini /usr/local/etc/php/conf.d/
-COPY supervisord.conf /etc/supervisor/supervisord.conf
+COPY supervisord.conf /etc/supervisord.conf
 
 # Expose port for PHP-FPM
 EXPOSE 80 9000
@@ -47,4 +47,4 @@ COPY start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh \
     && chown www-data:www-data /usr/local/bin/start.sh
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
