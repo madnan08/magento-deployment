@@ -27,8 +27,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Create necessary directories and set permissions
 RUN mkdir -p /var/www/magento2 && \
     chown -R www-data:www-data /var/www/magento2 && \
-    mkdir -p /var/log/php-fpm && \
-    chown -R www-data:www-data /var/log/php-fpm
+    mkdir -p /run/php && \
+    chown -R www-data:www-data /run/php
 
 WORKDIR /var/www/magento2
 
