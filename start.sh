@@ -1,11 +1,28 @@
 #!/bin/bash
 
+# Change directory to where Magento should be installed
 cd /var/www/magento2
 
+# Set up Composer authentication for accessing Magento repository
+echo "Setting up Composer authentication..."
+echo '{
+    "http-basic": {
+        "repo.magento.com": {
+            "username": "'"${PUBLIC_KEY}"'",
+            "password": "'"${PRIVATE_KEY}"'"
+        }
+    }
+}' > /root/.composer/auth.json
+
+# Update Composer to the latest version
+echo "Updating Composer..."
 composer self-update
+
+# Create Magento project
+echo "Creating Magento project..."
 composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition=2.4.6 .
 
-
+# Run Magento setup
 echo "Running Magento setup:install..."
 php bin/magento setup:install \
     --base-url=${MAGENTO_HOST} \
@@ -15,7 +32,7 @@ php bin/magento setup:install \
     --db-password=${DB_PASSWORD} \
     --admin-firstname=Admin \
     --admin-lastname=User \
-    --admin-email=adnan.sarfraz.2302105@gmail.com \
+    --admin-email=${ADMIN_EMAIL} \
     --admin-user=${MAGENTO_USERNAME} \
     --admin-password=${MAGENTO_PASSWORD} \
     --language=en_US \
@@ -26,4 +43,4 @@ php bin/magento setup:install \
     --elasticsearch-port=9200 \
     --search-engine=elasticsearch7
 
-php-fpm -F
+exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
