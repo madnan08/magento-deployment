@@ -17,11 +17,11 @@ spec:
     spec:
       containers:
         - name: magento
-          image: madnan08/magento-deployment:2.3
+          image: madnan08/magento-deployment:3.5
           imagePullPolicy: IfNotPresent
           env:
             - name: MAGENTO_HOST
-              value: "http://20.51.207.214:32000"
+              value: "http://4.242.20.137:32000"
             - name: DB_HOST
               value: mysql
             - name: DB_NAME
@@ -35,6 +35,8 @@ spec:
                   key: mysql-magento-password
             - name: MAGENTO_USERNAME
               value: admin
+            - name: ADMIN_EMAIL
+              value: adnan.sarfraz.2302105@gmail.com
             - name: MAGENTO_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -55,25 +57,7 @@ spec:
           ports:
             - name: http
               containerPort: 80
-          volumeMounts:
-            - name: magento-data
-              mountPath: /var/www/magento2
-            - name: composer-auth
-              mountPath: "/root/.composer/auth.json"
-              subPath: auth.json
-              readOnly: true
-      volumes:
-        - name: magento-data
-          persistentVolumeClaim:
-            claimName: magento-pvc
-        - name: composer-auth
-          secret:
-            secretName: magento-auth-keys
-            items:
-              - key: public-key
-                path: auth.json
-              - key: private-key
-                path: auth.json
+
 ---
 apiVersion: v1
 kind: Service

@@ -28,23 +28,30 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN mkdir -p /var/www/magento2 && \
     chown -R www-data:www-data /var/www/magento2 && \
     mkdir -p /run/php && \
-    chown -R www-data:www-data /run/php
+    chown -R www-data:www-data /run/php && \
+    chmod u+w /root/.composer
 
-WORKDIR /var/www/magento2
-
+# Remove auth.json file if it exists
+RUN if [ -f /root/.composer/auth.json ]; then rm /root/.composer/auth.json; fi
 COPY auth.json /root/.composer/auth.json
 
+# Set working directory
+WORKDIR /var/www/magento2
+RUN composer self-update && \
+    composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition .
+
+RUN find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} +
+    
 # Copy configuration files
 COPY php-fpm.conf /usr/local/etc/php-fpm.conf
-COPY nginx.conf /etc/nginx/nginx.conf
 COPY php.ini /usr/local/etc/php/conf.d/
-COPY supervisord.conf /etc/supervisord.conf
+
 
 # Expose port for PHP-FPM
-EXPOSE 80 9000
+EXPOSE 9000
 
 COPY start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh \
     && chown www-data:www-data /usr/local/bin/start.sh
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+CMD ["/usr/local/bin/start.sh"]

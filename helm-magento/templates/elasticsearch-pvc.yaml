@@ -5,7 +5,7 @@ metadata:
   namespace: magento
 spec:
   capacity:
-    storage: 20Gi
+    storage: 15Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
@@ -22,4 +22,4 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi
+      storage: 15Gi
