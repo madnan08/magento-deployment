@@ -21,9 +21,3 @@ elasticsearch:
     size: 30Gi
     storageClassName: standard
 
-magento:
-  storage:
-    enabled: true
-    size: 20Gi
-    storageClassName: standard
-
